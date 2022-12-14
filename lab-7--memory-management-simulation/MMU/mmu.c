@@ -57,7 +57,7 @@ void allocate_memory(list_t * freelist, list_t * alloclist, int pid, int blocksi
 
   blk->end = blk->start + blocksize - 1;
 
-  add_node_sorted(alloclist, blk);
+  list_add_ascending_by_address(alloclist, blk);
 
   if (blk->end < original_end) {
     node_t *fragment = malloc(sizeof(node_t));
@@ -66,6 +66,15 @@ void allocate_memory(list_t * freelist, list_t * alloclist, int pid, int blocksi
     fragment->end = original_end;
     add_node(freelist, fragment, policy);
   }
+	
+if (policy == 1) {
+      list_add_to_back(freelist, fragment);
+    } else if (policy == 2) {
+      list_add_ascending_by_blocksize(freelist, fragment);
+    } else if (policy == 3) {
+      list_add_descending_by_blocksize(freelist, fragment);
+    }
+
 
 
     /* if policy == 1 -> FIFO
